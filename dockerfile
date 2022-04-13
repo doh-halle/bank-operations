@@ -2,9 +2,9 @@ FROM golang:latest
 
 LABEL maintainer="Doh Halle <u_mhallen@hotmail.com>"
 
-RUN mkdir /app
+RUN mkdir /bank-operations
 
-WORKDIR  /app
+WORKDIR  /bank-operations
 
 COPY go.mod .
 
@@ -14,6 +14,6 @@ RUN go mod download
 
 COPY . .
 
-ENV PORT 5000
+EXPOSE 8080
 
 RUN go build && ./bank-operations
