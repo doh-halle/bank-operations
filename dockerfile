@@ -14,6 +14,6 @@ RUN go mod download
 
 COPY . .
 
-EXPOSE 8080
+EXPOSE 6000
 
 RUN go build && ./bank-operations

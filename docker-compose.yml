@@ -1,0 +1,42 @@
+version: "3.8"
+
+services:
+    ### PostgreSQL Database ###
+  bo-db:
+    image: ubuntu/postgres
+    container_name: "banks-operations-db"
+    ports:
+      - "5400:5432"
+    environment:
+      - POSTGRES_DB="bank_operations"
+      - POSTGRES_USER="postgres"
+      - POSTGRES_PASSWORD="manager123"
+    volumes:
+      - data_bank_operations:/var/lib/postgresql/data  
+    networks:
+      - backend
+    ### Golang Web API ###
+  golang:
+    container_name: "bank-operations-api"
+    build:
+      context: .
+    depends_on:
+      - bo-db
+    environment:
+      - DB_USERNAME="postgres"
+      - DB_PASSWORD="manager123"
+      - DB_DB="bank_operations"
+      - DB_HOST="bo-db"
+      - DB_PORT="5432"
+    ports:
+      - 6000:6000
+    networks:
+      - backend
+
+volumes:
+  data_bank_operations:
+
+networks:
+  backend:
+    driver: bridge
+      
