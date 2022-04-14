@@ -20,11 +20,12 @@ func createConnection() *sql.DB {
 	godotenv.Load()
 	host := os.Getenv("HOST")
 	user := os.Getenv("USER")
-	dbname := os.Getenv("NAME")
 	password := os.Getenv("PASSWORD")
+	dbname := os.Getenv("NAME")
+	sslmode := os.Getenv("SSLMODE")
 
 	//Database Connection String
-	connStr := fmt.Sprintf("host=%s user=%s password=%s dbname=%s sslmode=disable", host, user, password, dbname)
+	connStr := fmt.Sprintf("host=%s user=%s password=%s dbname=%s sslmode=%s", host, user, password, dbname, sslmode)
 
 	//Opening connection to database
 	db, err := sql.Open("postgres", connStr)

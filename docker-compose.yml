@@ -3,7 +3,7 @@ version: "3.8"
 services:
     ### PostgreSQL Database ###
   bo-db:
-    image: ubuntu/postgres
+    image: postgres
     container_name: "banks-operations-db"
     ports:
       - "5400:5432"
@@ -18,8 +18,7 @@ services:
     ### Golang Web API ###
   golang:
     container_name: "bank-operations-api"
-    build:
-      context: .
+    image: ea7f935977ea
     depends_on:
       - bo-db
     environment:

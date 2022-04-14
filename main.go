@@ -3,7 +3,6 @@ package main
 import (
 	"log"
 	"net/http"
-	"os"
 
 	"github.com/gorilla/mux"
 	_ "github.com/lib/pq"
@@ -20,6 +19,7 @@ func main() {
 	r.HandleFunc("/api/account_balance/{id}", account_balance).Methods("GET")
 
 	// Web Server
-	port := os.Getenv("PORT")
-	log.Fatal(http.ListenAndServe(":"+port, r))
+	//port := os.Getenv("PORT")
+	log.Fatal(http.ListenAndServe(":6000", r))
+	//":"+port
 }
