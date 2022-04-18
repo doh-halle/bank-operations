@@ -7,20 +7,6 @@ This is the source code for a bank app, with API endpoints for performing the ba
 
 The app was written in Golang and it enterracts with a postgresql database at the backend. Regarding my level of experience, I have been working with Go for two years. The transactions were tested using the web API testing tool - Postman
 
-The installation steps assume that you have docker and postman installed on your test computer. run the following commands to download, build and run the two containers necessary for this test, One is a postgres dababase called bo-db and the other is a golang api app.
-
-$ docker build -t hallecraft/bo-db:version1 $ docker build -t hallecraft/bo-api:version1
-
-$ docker run -p 5400:5432 hallecraft/bo-db $ docker run -p 7000:7000 hallecraft/bo-api
-
-To ensure the containers are up and running, run the command below, you should get a list with both containers and status: up $ docker ps
-
-Check the available docker networks using the command below, you should find bo-network in the list $ docker network ls
-
-Connect the API container - hallecraft/bo-api into the bo-network after copying its container id from the results of the docker ps command, with the command below to connect. $ docker network connect bo-network container_id
-
-The system is now ready for you to begin API tests. Launch your postman app.
-
 Test 1 - Account creation test.
 
     place the link - localhost:7000/api/create_customer - in address or URL bar
