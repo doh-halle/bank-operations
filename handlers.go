@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+
 	"os"
 	"strconv"
 
@@ -19,13 +20,13 @@ func createConnection() *sql.DB {
 	//Loading environment variables
 	godotenv.Load()
 	host := os.Getenv("HOST")
+	port := os.Getenv("PORT")
 	user := os.Getenv("USER")
 	password := os.Getenv("PASSWORD")
-	dbname := os.Getenv("NAME")
-	sslmode := os.Getenv("SSLMODE")
+	dbname := os.Getenv("NAME") //
 
 	//Database Connection String
-	connStr := fmt.Sprintf("host=%s user=%s password=%s dbname=%s sslmode=%s", host, user, password, dbname, sslmode)
+	connStr := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable", host, port, user, password, dbname)
 
 	//Opening connection to database
 	db, err := sql.Open("postgres", connStr)
@@ -38,7 +39,7 @@ func createConnection() *sql.DB {
 	if err != nil {
 		log.Fatal(err)
 	}
-	//fmt.Println("Database Connection Successful!")
+
 	return db
 }
 
@@ -111,6 +112,24 @@ func updateAccountBalance(id int64, accountbalance AccountBalance) int64 {
 		log.Print("Unable to update account balance", err)
 	}
 	fmt.Printf(" - Your new Account Balance is - %v", updated_acc_bal)
+	return updated_acc_bal
+}
+
+func accountBalanceUpdate(id int64, accountbalance AccountBalance) int64 {
+	db := createConnection()
+
+	defer db.Close()
+
+	//Initialize account balance statement
+	sqlStatement := `select accountbalance from accountbalance where customerid=$1;`
+
+	var updated_acc_bal int64
+
+	//Execute sql statement
+	err := db.QueryRow(sqlStatement, id).Scan(&updated_acc_bal)
+	if err != nil {
+		log.Print("Unable to update account balance", err)
+	}
 	return updated_acc_bal
 }
 
@@ -288,23 +307,31 @@ func withdraw_cash(w http.ResponseWriter, r *http.Request) {
 		log.Println("Unable to convert string into int", err)
 	}
 	//Create an empty transaction of type TransactionHistory
-	var transactionhistory TransactionHistory
-	var accountbalance AccountBalance
+	var th TransactionHistory
+	var ab AccountBalance
 
 	//Decode the json request to transactionhistory
-	err = json.NewDecoder(r.Body).Decode(&transactionhistory)
+	err = json.NewDecoder(r.Body).Decode(&th)
 	if err != nil {
 		log.Printf("Unable to decode the request body. %v", err)
 	}
 
+	acc_Balance := accountBalanceUpdate(int64(id), ab)
+	trans_Amount, err := strconv.ParseInt(th.TransactionAmount, 10, 64)
+	if err != nil {
+		log.Println("Unable to convert string into int", err)
+	}
+
 	//Call Getbalance and ensure Customer has sufficient funds
-	if transactionhistory.TransactionAmount >= accountbalance.AccountBalance {
+	if trans_Amount >= acc_Balance {
 		log.Println("Transaction declined - Insufficient funds.")
+		//fmt.Printf("Account balance before withdrawal - console %v", acc_Balance)
+		//fmt.Printf("Transaction amount - console %v", trans_Amount)
 		json.NewEncoder(w).Encode("Insufficient Funds!")
 	} else {
 		//Call update updateTransactionHistory to perform transaction
-		updatedRow1 := withdrawalTransactionHistory(int64(id), transactionhistory)
-		updatedRow2 := updateAccountBalance(int64(id), accountbalance)
+		updatedRow1 := withdrawalTransactionHistory(int64(id), th)
+		updatedRow2 := updateAccountBalance(int64(id), ab)
 
 		//format the meesage string
 		msg1 := fmt.Sprintf("New withdrawal completed successfully, Amount - %v", updatedRow1)

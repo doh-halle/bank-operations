@@ -1,4 +1,5 @@
-FROM golang:latest
+# syntax=docker/dockerfile:1
+FROM golang:1.16-alpine3.15
 
 LABEL maintainer="Doh Halle <u_mhallen@hotmail.com>"
 
@@ -14,6 +15,10 @@ RUN go mod download
 
 COPY . .
 
-EXPOSE 6000
+RUN go build -o /bo-api
 
-RUN go build && ./bank-operations
+#RUN ./bank-operations
+
+EXPOSE 7000
+
+CMD [ "/bo-api" ]
