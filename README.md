@@ -15,7 +15,7 @@ Test 1 - Account creation test.
     Paste in the following json formatted data in the body of the request { "firstname": "Barack", "lastname": "Obama", "email": "bobama@usa.gov", "phonenumber": "5124684442", "occupation": "President", "customercity": "W-DC" }
     Click the Blue send button
 
-Expected response should be
+Expected response:
 
     200 for response code
     response body - { "id": 5, "message1": "Account created successfully, Thank you for using Mondu!" }
@@ -31,7 +31,7 @@ Test 2 - Deposit Cash into specific account test.
 
     Click the Blue send button
 
-Expected response should be
+Expected response:
 
     200 for response code
     Responds body - { "id": 1, "message1": "New deposit completed successfully, Amount - 28000", "message2": " - Your new account balance is - 28000" }
@@ -44,7 +44,7 @@ Test 3 - Withdraw Cash from specific account test.
     Paste in the following json formatted data in the body of the request { "accountnumber": "1", "mediumoftransaction": "Cash", "transactionamount": "10000" }
     Click the Blue send button
 
-Expected response should be
+Expected response:
 
     200 for response code
     Responds body { "id": 1, "message1": "New withdrawal completed successfully, Amount - 10000", "message2": " - Your new account balance is - 18000" }
@@ -56,7 +56,7 @@ Test 4 - Check Account Balance for specific account id test.
     Choose GET request, from frequest methods next to the address bar
     Click the Blue send button
 
-Expected response should be
+Expected response:
 
     200 for response code
     Response body { "accountnumber": "1", "customerid": "1", "accountbalance": "43000", "balancedate": "2022-04-18T00:00:00Z" }
